@@ -13,10 +13,10 @@ def main():
 	def total_number_of_months():
 		return 0
 
-	def total_profit_or_loss():
+	def total_change():
 		return 0
 
-	def average_monthly_profit_or_loss():
+	def average_monthly_change():
 		return 0
 
 	def greatest_increase():
@@ -29,8 +29,8 @@ def main():
 	read_csv()
 
 	total_months = total_number_of_months()
-	total_amount_change = as_currency(total_profit_or_loss())
-	average_monthly_change = as_currency(average_monthly_profit_or_loss())
+	total_change = as_currency(total_change())
+	average_monthly_change = as_currency(average_monthly_change())
 	greatest_increase = as_currency(greatest_increase())
 	greatest_decresse = as_currency(greatest_decrease())
 
@@ -39,7 +39,7 @@ def main():
 	print("-" * 30)
 	print("")
 	print(f"Total Months: {total_months}")
-	print(f"Total: {total_amount_change}")
+	print(f"Total: {total_change}")
 	print(f"Average  Change: {average_monthly_change}")
 	print(f"Greatest Increase in Profits: {greatest_increase}")
 	print(f"Greatest Decrease in Profits: {greatest_decresse}")
