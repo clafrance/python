@@ -8,16 +8,11 @@
 import os
 import csv
 
-total_num_months = 0
-total_profit_loss = 0
-profit_loss_change = 0
-total_profit_loss_change = 0
-average_monthly_profit_loss_change = 0
-greatest_increase_in_profit_loss = 0
-greatest_increase_month = ""
-greatest_decrease_in_profit_loss = 0
-greatest_decrease_month = ""
+profits = []
+months_profits = []
 
+
+# Read csv data file
 csvpath = os.path.join('../PyBank', 'Resources', 'budget_data.csv')
 
 with open(csvpath, newline='') as csvfile:
@@ -27,76 +22,73 @@ with open(csvpath, newline='') as csvfile:
 	next(csvreader)
 
 	for row in csvreader:
-
-		total_num_months = total_num_months + 1
-		profit_loss = float(row[1])
-		total_profit_loss = total_profit_loss + profit_loss
-
-		if total_num_months > 1:
-			profit_loss_change = profit_loss - previous_profit_loss
-
-		total_profit_loss_change = total_profit_loss_change + profit_loss_change
-
-		if profit_loss_change > greatest_increase_in_profit_loss:
-
-			greatest_increase_in_profit_loss = profit_loss_change
-			greatest_increase_month = row[0]
-
-		elif profit_loss_change < greatest_decrease_in_profit_loss:
-
-			greatest_decrease_in_profit_loss = profit_loss_change
-			greatest_decrease_month = row[0]
-
-		previous_profit_loss = profit_loss
-
-	average_monthly_change = total_profit_loss_change / (total_num_months - 1)
-
-	print("")
-	print("Financial Analysis")
-	print("-" * 40)
-	print("")
-	print(f'Total Months: { total_num_months }')
-	print(f'Total: ${ round(total_profit_loss) }')
-	print(f'Average  Change: ${ round(average_monthly_change, 2) }')
-	print(f'Greatest Increase in Profits: { greatest_increase_month } (${ round(greatest_increase_in_profit_loss) })')
-	print(f'Greatest Decrease in Profits: { greatest_decrease_month } (${ round(greatest_decrease_in_profit_loss) })')
-	print("")
-
-	if not os.path.isdir('../PyBank/output'):
-		os.makedirs('../PyBank/output')
-
-	outputfile = '../PyBank/output/bank_data_analysis.txt'
-
-	with open(outputfile, 'w') as textfile:
-	
-		textfile.write('Financial Analysis \n')
-		textfile.write("-" * 40)
-		textfile.write("\n")
-		textfile.write(f'Total Months: { total_num_months }\n')
-		textfile.write(f'Total: ${ round(total_profit_loss) }\n')
-		textfile.write(f'Average  Change: ${ round(average_monthly_change, 2) }\n')
-		textfile.write(f'Greatest Increase in Profits: { greatest_increase_month } (${ round(greatest_increase_in_profit_loss) })\n')
-		textfile.write(f'Greatest Decrease in Profits: { greatest_decrease_month } (${ round(greatest_decrease_in_profit_loss) })\n')
+		months_profits.append([row[0], float(row[1])])
 
 
-	# output_path = os.path.join("../PyBank", "output", "bank_data_analysis.csv")
+# Get total number of months
+num_of_months = len(months_profits)
 
-	# with open(output_path, 'w', newline='') as csvfile:
 
-	# 	csvwriter = csv.writer(csvfile, delimiter=',')
-	# 	csvwriter.writerow(['Financial Analysis'])
-	# 	csvwriter.writerow(["-" * 40])
-	# 	csvwriter.writerow("")
-	# 	csvwriter.writerow([f'Total Months: {total_num_months}'])
-	# 	csvwriter.writerow([f'Total: ${round(total_profit_loss)}'])
-	# 	csvwriter.writerow([f'Average  Change: ${round(average_monthly_change, 2)}'])
-	# 	csvwriter.writerow([f'Greatest Increase in Profits: {greatest_increase_month} (${round(greatest_increase_in_profit_loss)})'])
-	# 	csvwriter.writerow([f'Greatest Decrease in Profits: {greatest_decrease_month} (${round(greatest_decrease_in_profit_loss)})'])
+# Set initial values
+total_profits = months_profits[0][1] + months_profits[1][1]
+total_profit_change = months_profits[1][1] - months_profits[0][1]
+greatest_increase_in_profit = total_profit_change
+greatest_decrease_in_profit = total_profit_change
+greatest_increase_month = months_profits[1][0]
+greatest_decrease_month = months_profits[1][0]
 
-		# def as_currency(amount):
-		# 	if amount >= 0:
-		# 		return '${:,.2f}'.format(amount)
-		# 	else:
-		# 		return '-${:,.2f}'.format(-amount)
+
+# Calculatie total profit change
+# Get the greatest increase in profit
+# Get the greatest decrease in profit
+i = 2
+
+while i <= (num_of_months - 1):
+	profit_change = months_profits[i][1] - months_profits[i-1][1]
+	total_profit_change = total_profit_change + profit_change
+
+	if profit_change > greatest_increase_in_profit:
+		greatest_increase_in_profit = profit_change
+		greatest_increase_month = months_profits[i][0]
+
+	if profit_change < greatest_decrease_in_profit:
+		greatest_decrease_in_profit = profit_change
+		greatest_decrease_month = months_profits[i][0]
+
+	i = i + 1
+
+
+# Calculate average profit change
+average_monthly_profit_change = total_profit_change / (num_of_months - 1)
+
+
+# Print result on screen
+print("")
+print("Financial Analysis")
+print(f"{'-' * 40}")
+print(f'Total Months: { num_of_months }')
+print(f'Total: ${ round(total_profits) }')
+print(f'Average  Change: ${ round(average_monthly_profit_change, 2) }')
+print(f'Greatest Increase in Profits: { greatest_increase_month } (${ round(greatest_increase_in_profit) })')
+print(f'Greatest Decrease in Profits: { greatest_decrease_month } (${ round(greatest_decrease_in_profit) })')
+print("")
+
+
+# print result to a text file
+if not os.path.isdir('../PyBank/output'):
+	os.makedirs('../PyBank/output')
+
+outputfile = '../PyBank/output/bank_data_analysis.txt'
+
+with open(outputfile, 'w') as textfile:
+
+	textfile.write('Financial Analysis \n')
+	textfile.write(f"{'-' * 40}\n")
+	textfile.write(f'Total Months: { num_of_months }\n')
+	textfile.write(f'Total: ${ round(total_profits) }\n')
+	textfile.write(f'Average  Change: ${ round(average_monthly_profit_change, 2) }\n')
+	textfile.write(f'Greatest Increase in Profits: { greatest_increase_month } (${ round(greatest_increase_in_profit) })\n')
+	textfile.write(f'Greatest Decrease in Profits: { greatest_decrease_month } (${ round(greatest_decrease_in_profit) })\n')
+
 
 
