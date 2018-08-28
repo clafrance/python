@@ -1,51 +1,61 @@
 
-def main():
+import os
+import csv
 
-	def read_csv():
-		return 0
+total_num_months = 0
+total_profit_loss = 0
+profit_loss_change = 0
+total_profit_loss_change = 0
+average_monthly_profit_loss_change = 0
+greatest_increase_in_profit_loss = 0
+greatest_increase_month = ""
+greatest_decrease_in_profit_loss = 0
+greatest_decrease_month = ""
 
-	def as_currency(amount):
-	    if amount >= 0:
-	        return '${:,.2f}'.format(amount)
-	    else:
-	        return '-${:,.2f}'.format(-amount)
+# def as_currency(amount):
+#     if amount >= 0:
+#         return '${:,.2f}'.format(amount)
+#     else:
+#         return '-${:,.2f}'.format(-amount)
 
-	def total_number_of_months():
-		return 0
+csvpath = os.path.join('../PyBank', 'Resources', 'budget_data.csv')
+with open(csvpath, newline='') as csvfile:
 
-	def total_change():
-		return 0
+	csvreader = csv.reader(csvfile, delimiter=',')
+	next(csvreader)
 
-	def average_monthly_change():
-		return 0
+	for row in csvreader:
 
-	def greatest_increase():
-		return 0
+		total_num_months = total_num_months + 1
+		profit_loss = float(row[1])
+		total_profit_loss = total_profit_loss + profit_loss
 
-	def greatest_decrease():	
-		return 0
-	def write_csv():
-		return 0
-	read_csv()
+		if total_num_months > 1:
+			profit_loss_change = profit_loss - previous_profit_loss
 
-	total_months = total_number_of_months()
-	total_change = as_currency(total_change())
-	average_monthly_change = as_currency(average_monthly_change())
-	greatest_increase = as_currency(greatest_increase())
-	greatest_decresse = as_currency(greatest_decrease())
+		total_profit_loss_change = total_profit_loss_change + profit_loss_change
+
+		if profit_loss_change > greatest_increase_in_profit_loss:
+			greatest_increase_in_profit_loss = profit_loss_change
+			greatest_increase_month = row[0]
+		elif profit_loss_change < greatest_decrease_in_profit_loss:
+			greatest_decrease_in_profit_loss = profit_loss_change
+			greatest_decrease_month = row[0]
+
+		previous_profit_loss = profit_loss
+
+	average_monthly_change = total_profit_loss_change / (total_num_months - 1)
+
 
 	print("")
 	print("Financial Analysis")
 	print("-" * 30)
 	print("")
-	print(f"Total Months: {total_months}")
-	print(f"Total: {total_change}")
-	print(f"Average  Change: {average_monthly_change}")
-	print(f"Greatest Increase in Profits: {greatest_increase}")
-	print(f"Greatest Decrease in Profits: {greatest_decresse}")
+	print(f'Total Months: {total_num_months}')
+	print(f'Total: ${round(total_profit_loss)}')
+	print(f'Average  Change: ${round(average_monthly_change, 2)}')
+	print(f'Greatest Increase in Profits: {greatest_increase_month} (${round(greatest_increase_in_profit_loss)})')
+	print(f'Greatest Decrease in Profits: {greatest_decrease_month} (${round(greatest_decrease_in_profit_loss)})')
 	print("")
 
-	write_csv()
-
-
-main()
+	# write_csv()
