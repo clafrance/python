@@ -34,7 +34,7 @@ with open(csvpath, newline='') as csvfile:
 total_votes = len(set(voters))
 
 if not total_votes == len(voters):
-	print("Duplicate Voter ID in the data, please cleanup the data first")
+	print("Duplicate Voter IDs in the data")
 	exit()
 
 # Get the list of candidates who received votes
