@@ -42,7 +42,7 @@ candidates_received_votes = set(candidates)
 
 # GCalculate how many votes each candidate received, 
 # Generate a list to track votes for each candidate
-# Generate a Dictionary to track votes and candidate pair with votes as key
+# Generate a Dictionary to track votes and candidate pair with votes as key, unsorted
 for candidate in candidates_received_votes:
 	votes = candidates.count(candidate)
 	votes_per_candidate.append(votes)
@@ -54,26 +54,29 @@ votes_per_candidate = sorted(votes_per_candidate, reverse=True)
 # Generate a Dictionary to track votes and candidate pair with candidate as key, it is sorted by votes
 for votes in votes_per_candidate:
 	candidate = votes_candidate[votes]
-	candidate_votes[candidate] = votes
+	percentage = (votes / total_votes) * 100
+	candidate_votes[candidate] = [votes, percentage]
 
 # Through sorted candidate/votes dictionary, find the winner's name	
 winner = list(candidate_votes.keys())[0]
 
-# function for priting format
-def percentage(votes, total_votes):
-	return (votes / total_votes) * 100
+def print_divider_line():
+	print(f"{'-' * 30}")
 
 # Print result on screen
 print('')
-print('Election Result')
-print('-' * 40)
+print('Election Results')
+print_divider_line()
 print(f'Total Votes: { total_votes }')
-print('-' * 40)
+print_divider_line()
 for key in candidate_votes:
-	print(f'{ key }: { percentage(candidate_votes[key], total_votes) }% ({ candidate_votes[key] }) ')
-print('-' * 40)
+	candidate = key
+	votes = candidate_votes[key][0]
+	percentage = candidate_votes[key][1]
+	print(f"{ candidate }: {percentage:7.3f}% ({ votes })")
+print_divider_line()
 print(f'Winner: { winner }')
-print('-' * 40)
+print_divider_line()
 print('')
 
 # Output result to a text file
@@ -84,22 +87,24 @@ if not os.path.isdir('../PyPoll/output'):
 
 outputfile = '../PyPoll/output/election_data_analysis.txt'
 
+def write_divider_line():
+	textfile.write(f"{'-' * 40}\n")
+
+# Output to text file
 with open(outputfile, 'w') as textfile:
 
-	textfile.write('Election Results \n')
-	textfile.write("-" * 40)
-	textfile.write('\n')
+	textfile.write("Election Results \n")
+	write_divider_line()
 	textfile.write(f'Total Votes: { total_votes }\n')
-	textfile.write("-" * 40)
-	textfile.write('\n')
+	write_divider_line()
 	for key in candidate_votes:
-		textfile.write(f'{ key }: { percentage(candidate_votes[key], total_votes) }% ({ candidate_votes[key] }) ')
-		textfile.write('\n')
-	textfile.write("-" * 40)
-	textfile.write('\n')
+		candidate = key
+		votes = candidate_votes[key][0]
+		percentage = candidate_votes[key][1]
+		textfile.write(f"{ candidate }: {percentage:7.3f}% ({ votes })\n")	
+	write_divider_line()
 	textfile.write(f'Winner: { winner }\n')
-	textfile.write("-" * 40)
-	textfile.write('\n')
+	write_divider_line()
 
 
 
