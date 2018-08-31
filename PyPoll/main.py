@@ -17,7 +17,7 @@ votes_candidate = {}
 candidate_votes = {}
 
 # Read the input election data csv file
-csvpath = os.path.join('../PyPoll', 'Resources', 'election_data.csv')
+csvpath = os.path.join('Resources', 'election_data.csv')
 
 with open(csvpath, newline='') as csvfile:
 
