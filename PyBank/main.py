@@ -13,7 +13,8 @@ months_profits = []
 
 
 # Read csv data file
-csvpath = os.path.join('../PyBank', 'Resources', 'budget_data.csv')
+csvpath = os.path.join('Resources', 'budget_data.csv')
+
 
 with open(csvpath, newline='') as csvfile:
 
