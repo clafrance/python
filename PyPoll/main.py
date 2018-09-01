@@ -82,10 +82,10 @@ print('')
 # Output result to a text file
 
 # Check to see if output directory exists
-if not os.path.isdir('../PyPoll/output'):
-	os.makedirs('../PyPoll/output')
+if not os.path.isdir('output'):
+	os.makedirs('output')
 
-outputfile = '../PyPoll/output/election_data_analysis.txt'
+outputfile = 'output/election_data_analysis.txt'
 
 def write_divider_line():
 	textfile.write(f"{'-' * 40}\n")
