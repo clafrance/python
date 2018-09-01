@@ -76,10 +76,10 @@ print("")
 
 
 # print result to a text file
-if not os.path.isdir('../PyBank/output'):
-	os.makedirs('../PyBank/output')
+if not os.path.isdir('output'):
+	os.makedirs('output')
 
-outputfile = '../PyBank/output/bank_data_analysis.txt'
+outputfile = 'output/bank_data_analysis.txt'
 
 with open(outputfile, 'w') as textfile:
 
