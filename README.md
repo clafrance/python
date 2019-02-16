@@ -1,4 +1,4 @@
-# PyBank
+## PyBank
 
 For given data, the Python script analyzes the records and calculate each of the following:
   * The total number of months included in the dataset
@@ -8,7 +8,7 @@ For given data, the Python script analyzes the records and calculate each of the
   * The greatest decrease in losses (date and amount) over the entire period
   
 
-# PyPoll
+## PyPoll
 
 Python script that analyzes the votes and calculates each of the following:
   * The total number of votes cast
