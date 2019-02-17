@@ -7,6 +7,7 @@
 
 import os
 import csv
+import sys
 
 
 def read_csv(file_path, file_name):
@@ -54,11 +55,16 @@ def calculate_profit_changes(profit_data):
             }
             
 
-
 def main():
     file_path = 'Resources'
     file_name = 'budget_data.csv'
-    profit_data = read_csv('Resources', 'budget_data.csv')
+
+    try:
+        profit_data = read_csv('Resources', 'budget_data.csv')
+    except Exception as e:
+        print("Reading csv file failed")
+        sys.exit(1)
+
 
     total_profit = profit_data[1]
     num_of_months = calculate_total_number_of_months(profit_data)
