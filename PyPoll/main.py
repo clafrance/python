@@ -8,103 +8,112 @@
 
 import os
 import csv
+import sys
 
-voters = []
-counties = []
-candidates = []
-votes_per_candidate = []
-votes_candidate = {}
-candidate_votes = {}
 
-# Read the input election data csv file
-csvpath = os.path.join('Resources', 'election_data.csv')
+def read_csv(file_path, file_name):
+    csvpath = os.path.join(file_path, file_name)
 
-with open(csvpath, newline='') as csvfile:
+    voters = []
+    counties = []
+    candidates = []
 
-	csvreader = csv.reader(csvfile, delimiter=',')
+    with open(csvpath, newline='') as csvfile:
+        csvreader = csv.reader(csvfile, delimiter=',')
+        next(csvreader)
 
-	next(csvreader)
+        for row in csvreader:
+            voters.append(row[0])
+            counties.append(row[1])
+            candidates.append(row[2])
 
-	for row in csvreader:
-		voters.append(row[0])
-		counties.append(row[1])
-		candidates.append(row[2])
+    return {"voters": voters, "counties": counties, "candidates": candidates}
 
-# Get the total number of votes
-total_votes = len(set(voters))
 
-if not total_votes == len(voters):
-	print("Duplicate Voter IDs in the data")
-	exit()
+def invalid_votes(voters):
+    return len(voters) != len(set(voters))
 
-# Get the list of candidates who received votes
-candidates_received_votes = set(candidates)
 
-# GCalculate how many votes each candidate received, 
-# Generate a list to track votes for each candidate
-# Generate a Dictionary to track votes and candidate pair with votes as key, unsorted
-for candidate in candidates_received_votes:
-	votes = candidates.count(candidate)
-	votes_per_candidate.append(votes)
-	votes_candidate[votes] = candidate
-	
-# Sort the votes list generated above in decending order	
-votes_per_candidate = sorted(votes_per_candidate, reverse=True)
+def analyze_candidates_votes(candidates):
+    """     """
+    candidates_list = set(candidates)
+    total_votes = len(candidates)
 
-# Generate a Dictionary to track votes and candidate pair with candidate as key, it is sorted by votes
-for votes in votes_per_candidate:
-	candidate = votes_candidate[votes]
-	percentage = (votes / total_votes) * 100
-	candidate_votes[candidate] = [votes, percentage]
+    candidate_votes_dict = {}
 
-# Through sorted candidate/votes dictionary, find the winner's name	
-winner = list(candidate_votes.keys())[0]
+    for candidate in candidates_list:
+        candidate_votes_dict[candidate] = 0
 
-def print_divider_line():
-	print(f"{'-' * 30}")
+    for candidate in candidates:
+        candidate_votes_dict[candidate] += 1 
 
-# Print result on screen
-print('')
-print('Election Results')
-print_divider_line()
-print(f'Total Votes: { total_votes }')
-print_divider_line()
-for key in candidate_votes:
-	candidate = key
-	votes = candidate_votes[key][0]
-	percentage = candidate_votes[key][1]
-	print(f"{ candidate }: {percentage:7.3f}% ({ votes })")
-print_divider_line()
-print(f'Winner: { winner }')
-print_divider_line()
-print('')
+    candidates_list = list(candidate_votes_dict.keys())
+    candidate_votes = list(candidate_votes_dict.values())
+    candidate_vote_percentage = [round((vote / total_votes) * 100, 1) for vote in candidate_votes]
+    winner = candidates_list[candidate_votes.index(max(candidate_votes))]
+    return {"total_votes": total_votes, 
+            "candidates": candidates_list, 
+            "votes": candidate_votes, 
+            "votes_percentages": candidate_vote_percentage, 
+            "winner": winner}
 
-# Output result to a text file
 
-# Check to see if output directory exists
-if not os.path.isdir('output'):
-	os.makedirs('output')
+def main():
+    file_path = "Resources"
+    file_name = 'election_data.csv'
+    
+    try:
+        voting_data = read_csv(file_path, file_name)
+    except Exception as e:
+        print("Reading csv file failed")
+        sys.exit(1)
+        
+    voters = voting_data["voters"]
+    
+    if invalid_votes(voters):  
+        print("Exit. There are duplicate data in voterID column")
+        sys.exit()
+  
+    candidates = voting_data["candidates"]
+    voting_data_analysis = analyze_candidates_votes(candidates)
 
-outputfile = 'output/election_data_analysis.txt'
+    total_votes = voting_data_analysis["total_votes"]
+    candidates = voting_data_analysis["candidates"]
+    votes = voting_data_analysis["votes"]
+    votes_percentages = voting_data_analysis["votes_percentages"]
+    winner = voting_data_analysis["winner"]
 
-def write_divider_line():
-	textfile.write(f"{'-' * 40}\n")
+    max_len = len(max(candidates, key=len))
+    print('\nElection Results\n')
+    print(f"{'-' * 30}")
+    print(f'Total Votes: { total_votes }')
+    print(f"{'-' * 30}")
+    for i in range(len(candidates)):
+        white_space = max_len - len(candidates[i])
+        print(f"{ candidates[i] }:{' '* white_space} {votes_percentages[i]: 7.3f}% ({ votes[i] })")
+    print(f"{'-' * 30}")
+    print(f'Winner: { winner }')
+    print(f"{'-' * 30}\n")
+    
+    if not os.path.isdir('output'):
+        os.makedirs('output')
 
-# Output to text file
-with open(outputfile, 'w') as textfile:
+    outputfile = 'output/election_data_analysis.txt'
+    with open(outputfile, 'w') as textfile:
+        textfile.write("\nElection Results \n\n")
+        textfile.write(f"{'-' * 30}\n")
+        textfile.write(f'Total Votes: { total_votes }\n')
+        textfile.write(f"{'-' * 30}\n")
+        for i in range(len(candidates)):
+            white_space = max_len - len(candidates[i])
+            textfile.write(f"{ candidates[i] }:{' '* white_space} {votes_percentages[i]: 7.3f}% ({ votes[i] })\n")
+        textfile.write(f"{'-' * 30}\n")
+        textfile.write(f'Winner: { winner }\n')
+        textfile.write(f"{'-' * 30}\n")
 
-	textfile.write("Election Results \n")
-	write_divider_line()
-	textfile.write(f'Total Votes: { total_votes }\n')
-	write_divider_line()
-	for key in candidate_votes:
-		candidate = key
-		votes = candidate_votes[key][0]
-		percentage = candidate_votes[key][1]
-		textfile.write(f"{ candidate }: {percentage:7.3f}% ({ votes })\n")	
-	write_divider_line()
-	textfile.write(f'Winner: { winner }\n')
-	write_divider_line()
+main()
+
+
 
 
 

@@ -33,13 +33,11 @@ def calculate_profit_changes(profit_data):
     months = []
     profit_changes = []
     profit_data = profit_data[0]
-    
-    i = 1
-    while i < (len(profit_data)):
+      
+    for i in range(1, len(profit_data-1)):
         profit_change = profit_data[i][1] - profit_data[i-1][1]
         profit_changes.append(profit_change)
         months.append(profit_data[i][0])
-        i = i + 1
    
     total_profit_change = sum(profit_changes)
     avg_profit_change = round(total_profit_change / len(profit_changes), 2)
@@ -54,10 +52,7 @@ def calculate_profit_changes(profit_data):
             "max_profit_change": max_profit_change, 
             "max_change_month": max_profit_month 
             }
-
-
-def export_to_text_file():
-
+            
 
 
 def main():
