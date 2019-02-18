@@ -65,7 +65,6 @@ def main():
         print("Reading csv file failed")
         sys.exit(1)
 
-
     total_profit = profit_data[1]
     num_of_months = calculate_total_number_of_months(profit_data)
     profit_changes = calculate_profit_changes(profit_data)
