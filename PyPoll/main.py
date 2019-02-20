@@ -40,6 +40,7 @@ def analyze_candidates_votes(candidates):
     total_votes = len(candidates)
 
     candidate_votes_dict = { candidate: 0 for candidate in candidates_list }
+    
     for candidate in candidates:
         candidate_votes_dict[candidate] += 1 
 
