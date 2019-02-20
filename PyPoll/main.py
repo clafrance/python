@@ -9,6 +9,7 @@
 import os
 import csv
 import sys
+import collections
 
 
 def read_csv(file_path, file_name):
@@ -39,7 +40,8 @@ def analyze_candidates_votes(candidates):
     candidates_list = set(candidates)
     total_votes = len(candidates)
 
-    candidate_votes_dict = { candidate: 0 for candidate in candidates_list }
+    candidate_votes_dict = collections.defaultdict(int)
+    # candidate_votes_dict = { candidate: 0 for candidate in candidates_list }
     
     for candidate in candidates:
         candidate_votes_dict[candidate] += 1 
