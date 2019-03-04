@@ -13,6 +13,22 @@ import collections
 
 
 def read_csv(file_path, file_name):
+    """ Read csv file, returns a dictionary of voting data
+    
+    Parameters
+    ----------
+    file_path: string
+        File directory for the csv file
+        
+    file_name: string
+        Name of the csv file
+        
+    Returns
+    -------
+    voting_data: dictionary
+        Dictionary of voting data
+        
+    """
     csvpath = os.path.join(file_path, file_name)
 
     voters = []
@@ -27,16 +43,47 @@ def read_csv(file_path, file_name):
             voters.append(row[0])
             counties.append(row[1])
             candidates.append(row[2])
+            
+    voting_data = {"voters": voters, "counties": counties, "candidates": candidates}
 
-    return {"voters": voters, "counties": counties, "candidates": candidates}
+    return voting_data
+
 
 
 def invalid_votes(voters):
+    """Check to see if there are invalid votes
+    
+    Parameters
+    ----------
+    votes: list
+        List of votes
+        
+    Return
+    ------
+    True: boolean
+        There are invalid votes
+    False: boolean
+        All votes are valid
+        
+    """
     return len(voters) != len(set(voters))
 
 
+
 def analyze_candidates_votes(candidates):
-    """     """
+    """Analyze candidates dato to get total votes, list of candidates as well as the votes they got, and who is the winner
+    
+    Parameters
+    ----------
+    candicates: list
+        List of candidates with voting data
+        
+    Return
+    ------
+    analysis_result: dictionary
+        A dictionary with snslysis result
+    
+    """
     candidates_list = set(candidates)
     total_votes = len(candidates)
 
@@ -50,14 +97,20 @@ def analyze_candidates_votes(candidates):
     candidate_votes = list(candidate_votes_dict.values())
     candidate_vote_percentage = [round((vote / total_votes) * 100, 1) for vote in candidate_votes]
     winner = candidates_list[candidate_votes.index(max(candidate_votes))]
-    return {"total_votes": total_votes, 
+    
+    analysis_result = {"total_votes": total_votes, 
             "candidates": candidates_list, 
             "votes": candidate_votes, 
             "votes_percentages": candidate_vote_percentage, 
             "winner": winner}
 
+    return analysis_result
+
+
 
 def main():
+    """Main function that is called when pybank is run on the command line"""
+    
     file_path = "Resources"
     file_name = 'election_data.csv'
     
@@ -110,8 +163,10 @@ def main():
         textfile.write(f'Winner: { winner }\n')
         textfile.write(f"{'-' * 30}\n")
 
-main()
 
+
+if __name__ == '__main__':
+    main()
 
 
 
